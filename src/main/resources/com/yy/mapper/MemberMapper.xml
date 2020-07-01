@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yy.mapper.MemberMapper">
+	<!-- <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/> -->
+	<insert id="insert" parameterType="com.yy.model.Member" >
+			insert into muber (sname,age,id) values(#{sname},#{age},#{id})
+	</insert>
+    <select id="selectAll" resultType="com.yy.model.Member">
+       	select * from muber where id = #{id};
+    </select>
+    <select id="findIdBySname" resultType="java.lang.String" parameterType="java.lang.String">
+        select id from muber where sname = #{sname};
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from muber where id = #{id}
+    </delete>
+    <update id="update" parameterType="com.yy.model.Member">
+        update muber set sname = #{sname},age=#{age} where id = #{id}
+    </update>
+    
+</mapper>
