@@ -2,12 +2,16 @@ package com.yy;
 
 import com.yy.model.Member;
 import com.yy.service.IMemberService;
+import javassist.*;
+import javassist.bytecode.MethodInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,8 +22,47 @@ public class HelloWord {
     @Autowired
     private IMemberService memberService;
 
-    @RequestMapping("/index")
+    @RequestMapping("/index2222")
     public String helloWord(){
+        ClassPool pool = ClassPool.getDefault();
+        try {
+            //创建类文件
+            CtClass jATestClazz = pool.makeClass("haha1");
+            //添加属性
+            CtField ctIdField=new CtField(pool.getCtClass("int"),"id",jATestClazz);
+            ctIdField.setModifiers(Modifier.PRIVATE);
+            jATestClazz.addField(ctIdField);
+            //添加get/set方法
+            jATestClazz.addMethod(CtNewMethod.getter("getId",ctIdField));
+            jATestClazz.addMethod(CtNewMethod.getter("setId",ctIdField));
+            //添加构造
+            CtConstructor ctConstructor=new CtConstructor(new CtClass[]{},jATestClazz);
+            //带方法体构造
+            StringBuffer sb = new StringBuffer();
+            sb.append("{\n").append("this.id = 27;\n}");
+            ctConstructor.setBody(sb.toString());
+            jATestClazz.addConstructor(ctConstructor);
+            //输出
+           // jATestClazz.writeFile("D:\\ideaWorkespace\\springboot\\src\\main\\java\\com\\yy\\");
+
+            CtClass ctClass = pool.get("haha1");
+            CtMethod ctMethod = ctClass.getDeclaredMethod("getId");
+            MethodInfo info = ctMethod.getMethodInfo();
+
+
+
+            //生成一个Class对象
+            Class<?> clazz=jATestClazz.toClass();
+            Object object=clazz.newInstance();
+            Object o = clazz.getMethod("getId", new Class[]{}).invoke(object);
+
+/*
+            FileOutputStream fileOutputStream=new FileOutputStream(new File("JATest.class"));
+            fileOutputStream.write(jATestClazz.toBytecode());
+            fileOutputStream.close();*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "hello word";
     }
     @RequestMapping("/insert")

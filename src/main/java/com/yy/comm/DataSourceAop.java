@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 @Aspect
@@ -41,6 +43,7 @@ public class DataSourceAop {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+
         if(dataSource == null){
             if (StringUtils.startsWithAny(methodName, "get", "select", "find")) {
                 DataSourceContextHolder.set(CommonConst.DB_SLAVE);
